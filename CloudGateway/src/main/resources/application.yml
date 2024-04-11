@@ -1,0 +1,61 @@
+server:
+  port: 9090
+spring:
+  application:
+    name: API-GATEWAY
+  config:
+    import: configserver:http://localhost:9296
+  cloud:
+    gateway:
+      mvc:
+        routes:
+          - id : ORDER-SERVICE
+            uri: lb://ORDER-SERVICE
+            predicates:
+              - Path=/order/**
+#            filters:
+#              - name: RequestRateLimiter
+#                args:
+#                  redis-rate-limiter.replenishRate: 1
+#                  redis-rate-limiter.burstCapacity: 1
+
+#            filters:
+#              - name: CircuitBreaker
+#                args:
+#                  name: ORDER-SERVICE
+#                  fallbackuri: forward:/orderServiceFallBack
+          - id: PAYMENT-SERVICE
+            uri: lb://PAYMENT-SERVICE
+            predicates:
+              - Path=/payment/**
+#            filters:
+#              - name: RequestRateLimiter
+#                args:
+#                  redis-rate-limiter.replenishRate: 1
+#                  redis-rate-limiter.burstCapacity: 1
+#            filters:
+#              - name: CircuitBreaker
+#                args:
+#                  name: PAYMENT-SERVICE
+#                  fallbackuri: forward:/paymentServiceFallBack
+          - id: PRODUCT-SERVICE
+            uri: lb://PRODUCT-SERVICE
+            predicates:
+              - Path=/product/**
+#            filters:
+#              - name: RequestRateLimiter
+#                args:
+#                  redis-rate-limiter.replenishRate: 1
+#                  redis-rate-limiter.burstCapacity: 1
+#            filters:
+#              - name: CircuitBreaker
+#                args:
+#                  name: PRODUCT-SERVICE
+#                  fallbackuri: forward:/productServiceFallBack
+okta:
+  oauth2:
+    audience: api://default
+    issuer: https://dev-04483498.okta.com/oauth2/default
+    client-id: 0oaf69ejoiKvroUof5d7
+    client-secret: z_bVB9pjP5_I80v3g6_ii-pmBYAiwGeqjWqNbbJdJjzDUB7Erizue5AyZ7NrrDQp
+    scopes: openid, profile, email, offline_access
